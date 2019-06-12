@@ -4,8 +4,7 @@ library(mice)
 ##########        Self-defined Preprocessing Funtions          ##############
 #############################################################################
 ## Function to scale and standardize covariate matrix X
-my.stdz <- function (x, center = TRUE, scale = TRUE, ... ) 
-{
+my.stdz <- function (x, center = TRUE, scale = TRUE, ... ) {
     nc <- ncol(x)
     if (center) {
         means <- apply(x, 2, mean, na.rm=TRUE)
@@ -20,8 +19,7 @@ my.stdz <- function (x, center = TRUE, scale = TRUE, ... )
 
 ## Function to create weight vector for each feature of covariate matrix X
 ## M is the total number of multiple imputation to perform
-wtVar <- function(x, M) 
-{
+wtVar <- function(x, M) {
    m   <- dim(x)[2]  
    wts <- NULL
    for (i in 1:m){ 
@@ -33,8 +31,7 @@ wtVar <- function(x, M)
 
 ## Another version of function to create weight vector for each feature of covariate matrix X
 ## M is the total number of multiple imputation to perform
-wtObs <- function(x, M) 
-{
+wtObs <- function(x, M) {
    m   <- dim(x)[1]  
    wts <- NULL
    for (i in 1:m){ 
@@ -49,8 +46,8 @@ wtObs <- function(x, M)
 ##########  Functions for Estimating Penalized Regression Coefficients  ############
 ####################################################################################
 ## Thresholding function 
-S.wnet <- function(z, r, ...)
-{  result<-0
+S.wnet <- function(z, r, ...) {  
+   result <- 0
    if (z>0 & r<abs(z)) result <- z-r
    if (z<0 & r<abs(z)) result <- z+r
    return(result)
@@ -58,9 +55,8 @@ S.wnet <- function(z, r, ...)
 
 ## Function to solve for regression coefficient estimate of weighted elastic net model 
 ## for the multiple-imputed data
-Solve.Beta.WENET <- function(X, Y, W, M=1, lambda, alpha, ...)
-{
-   N      <- nrow(X)/M
+Solve.Beta.WENET <- function(X, Y, W, M=1, lambda, alpha, ...) {
+   N <- nrow(X)/M
    if (missing(W)) {W = rep(1/M, N)}
    X1.new <- as.matrix(cbind(rep(1, nrow(X)), X))
    XWY    <- t(X1.new)%*%(W*Y)/N
@@ -81,8 +77,7 @@ Solve.Beta.WENET <- function(X, Y, W, M=1, lambda, alpha, ...)
 }
 
 ## Function to perform cross-validation to decide best estimate of beta
-calculate.cv <- function(X, Y, W, M=1, lambda, alpha, nfolds=10, foldid, ...)
-{  
+calculate.cv <- function(X, Y, W, M=1, lambda, alpha, nfolds=10, foldid, ...) {  
    N <- nrow(X)/M
    if (missing(W)) {W = rep(1/M, N)}
    cv.err.undo <- 0; beta.est.undo <- c()
@@ -99,8 +94,7 @@ calculate.cv <- function(X, Y, W, M=1, lambda, alpha, nfolds=10, foldid, ...)
 }
 
 ## Tunning function to estimate best penalized estimate of beta with function defined above
-tuning.wnet <- function (X, Y, W, M=1, alphas, nfolds=10, foldid, K=100, eps=0.01, ...) 
-{
+tuning.wnet <- function (X, Y, W, M=1, alphas, nfolds=10, foldid, K=100, eps=0.01, ...) {
     BETA.undo <- PMSE.undo <- LAMBDA <- NULL
     N   <- nrow(X)/M
     if (missing(W)) {W = rep(1/M, N)}
@@ -140,8 +134,7 @@ tuning.wnet <- function (X, Y, W, M=1, alphas, nfolds=10, foldid, K=100, eps=0.0
 }
 
 ## Self-defined summary function
-sum.wnet <- function(Obj, xTest, yTest, sensInd, specInd, ...)
-{ 
+sum.wnet <- function(Obj, xTest, yTest, sensInd, specInd, ...) { 
    coef <- Obj$Beta.opt[-1]
    pmse <- mean((yTest-Obj$Beta.opt[1]-xTest%*%Obj$Beta.opt[-1])^2)
    seVA <- coef[sensInd]
