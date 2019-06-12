@@ -1,1 +1,1 @@
-# Mutliple-Imputation-Weighted-Elastic-Net-for-Missing-Data
+# Mutliple-Imputation-Weighted-Elastic-Net method for missing data
